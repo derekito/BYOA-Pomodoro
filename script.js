@@ -13,11 +13,10 @@ class PomodoroTimer {
 
         this.initializeButtons();
         this.updateDisplay();
-        this.whaleSound = document.getElementById('omSound');
+        this.whaleSound = document.getElementById('whaleSound');
         this.whaleSound.addEventListener('error', (e) => {
             console.error('Error loading whale sound:', e);
         });
-        this.omInterval = null;
     }
 
     initializeButtons() {
