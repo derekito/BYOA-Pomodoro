@@ -24,7 +24,7 @@ When using VS Code and seeing suggested code:
 - Psychedelic gradient background
 - Glassmorphism effect
 - Responsive design
-- Om chant sound alert when timer completes
+- Calming whale song alert when timer completes
 
 ## How to Use
 
