@@ -86,20 +86,23 @@ class PomodoroTimer {
     }
 
     playAlarm() {
-        // Stop any existing sound
-        this.stopAlarm();
-        
         try {
-            // Play the sound once
-            const playPromise = this.omSound.play();
-            
-            if (playPromise !== undefined) {
-                playPromise.catch(error => {
-                    console.error('Error playing sound:', error);
-                });
-            }
+            // Reset the audio to start
+            this.omSound.currentTime = 0;
+            // Set volume to make sure it's not muted
+            this.omSound.volume = 1;
+            // Promise-based play
+            this.omSound.play().then(() => {
+                console.log('Audio played successfully');
+            }).catch(error => {
+                console.error('Error playing audio:', error);
+                // Fallback to alert if audio fails
+                alert('Time is up!');
+            });
         } catch (error) {
-            console.error('Error in playOm:', error);
+            console.error('Error in playAlarm:', error);
+            // Fallback to alert if audio fails
+            alert('Time is up!');
         }
     }
 
