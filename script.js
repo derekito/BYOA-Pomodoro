@@ -13,9 +13,9 @@ class PomodoroTimer {
 
         this.initializeButtons();
         this.updateDisplay();
-        this.whaleSound = document.getElementById('whaleSound');
-        this.whaleSound.addEventListener('error', (e) => {
-            console.error('Error loading whale sound:', e);
+        this.omSound = document.getElementById('omSound');
+        this.omSound.addEventListener('error', (e) => {
+            console.error('Error loading sound:', e);
         });
     }
 
@@ -86,28 +86,22 @@ class PomodoroTimer {
 
     playAlarm() {
         try {
-            // Reset the audio to start
-            this.whaleSound.currentTime = 0;
-            // Set volume to make sure it's not muted
-            this.whaleSound.volume = 1;
-            // Promise-based play
-            this.whaleSound.play().then(() => {
+            this.omSound.currentTime = 0;
+            this.omSound.play().then(() => {
                 console.log('Audio played successfully');
             }).catch(error => {
                 console.error('Error playing audio:', error);
-                // Fallback to alert if audio fails
                 alert('Time is up!');
             });
         } catch (error) {
             console.error('Error in playAlarm:', error);
-            // Fallback to alert if audio fails
             alert('Time is up!');
         }
     }
 
     stopAlarm() {
-        this.whaleSound.pause();
-        this.whaleSound.currentTime = 0;
+        this.omSound.pause();
+        this.omSound.currentTime = 0;
     }
 }
 
