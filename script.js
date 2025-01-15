@@ -14,6 +14,9 @@ class PomodoroTimer {
         this.initializeButtons();
         this.updateDisplay();
         this.omSound = document.getElementById('omSound');
+        this.omSound.addEventListener('error', (e) => {
+            console.error('Error loading sound:', e);
+        });
         this.omInterval = null;
     }
 
@@ -92,20 +95,33 @@ class PomodoroTimer {
         const maxPlays = 30; // 30 seconds worth of plays
 
         const playOm = () => {
-            this.omSound.currentTime = 0; // Reset to start
-            this.omSound.play();
-            playCount++;
-            
-            if (playCount >= maxPlays) {
-                clearInterval(this.omInterval);
-                this.omInterval = null;
+            try {
+                // Create a new promise for playing the sound
+                const playPromise = this.omSound.play();
+                
+                if (playPromise !== undefined) {
+                    playPromise.then(() => {
+                        // Sound played successfully
+                        this.omSound.currentTime = 0;
+                        playCount++;
+                        
+                        if (playCount >= maxPlays) {
+                            clearInterval(this.omInterval);
+                            this.omInterval = null;
+                        }
+                    }).catch(error => {
+                        console.error('Error playing sound:', error);
+                    });
+                }
+            } catch (error) {
+                console.error('Error in playOm:', error);
             }
         };
 
         // Play first time immediately
         playOm();
         // Then set interval for repeated plays
-        this.omInterval = setInterval(playOm, 1000); // Play every second
+        this.omInterval = setInterval(playOm, 1000);
     }
 
     // Add method to stop sound (optional)
