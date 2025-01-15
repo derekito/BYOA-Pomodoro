@@ -86,50 +86,24 @@ class PomodoroTimer {
     }
 
     playAlarm() {
-        // Clear any existing interval
-        if (this.omInterval) {
-            clearInterval(this.omInterval);
-        }
-
-        let playCount = 0;
-        const maxPlays = 30; // 30 seconds worth of plays
-
-        const playOm = () => {
-            try {
-                // Create a new promise for playing the sound
-                const playPromise = this.omSound.play();
-                
-                if (playPromise !== undefined) {
-                    playPromise.then(() => {
-                        // Sound played successfully
-                        this.omSound.currentTime = 0;
-                        playCount++;
-                        
-                        if (playCount >= maxPlays) {
-                            clearInterval(this.omInterval);
-                            this.omInterval = null;
-                        }
-                    }).catch(error => {
-                        console.error('Error playing sound:', error);
-                    });
-                }
-            } catch (error) {
-                console.error('Error in playOm:', error);
+        // Stop any existing sound
+        this.stopAlarm();
+        
+        try {
+            // Play the sound once
+            const playPromise = this.omSound.play();
+            
+            if (playPromise !== undefined) {
+                playPromise.catch(error => {
+                    console.error('Error playing sound:', error);
+                });
             }
-        };
-
-        // Play first time immediately
-        playOm();
-        // Then set interval for repeated plays
-        this.omInterval = setInterval(playOm, 1000);
+        } catch (error) {
+            console.error('Error in playOm:', error);
+        }
     }
 
-    // Add method to stop sound (optional)
     stopAlarm() {
-        if (this.omInterval) {
-            clearInterval(this.omInterval);
-            this.omInterval = null;
-        }
         this.omSound.pause();
         this.omSound.currentTime = 0;
     }
