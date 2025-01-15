@@ -13,6 +13,8 @@ class PomodoroTimer {
 
         this.initializeButtons();
         this.updateDisplay();
+        this.omSound = document.getElementById('omSound');
+        this.omInterval = null;
     }
 
     initializeButtons() {
@@ -74,14 +76,46 @@ class PomodoroTimer {
 
     reset() {
         this.pause();
+        this.stopAlarm();
         const activeMode = document.querySelector('.mode-selector button.active').id;
         this.timeLeft = this.modes[activeMode];
         this.updateDisplay();
     }
 
     playAlarm() {
-        // You can add a custom sound here
-        alert('Time is up!');
+        // Clear any existing interval
+        if (this.omInterval) {
+            clearInterval(this.omInterval);
+        }
+
+        let playCount = 0;
+        const maxPlays = 30; // 30 seconds worth of plays
+
+        const playOm = () => {
+            this.omSound.currentTime = 0; // Reset to start
+            this.omSound.play();
+            playCount++;
+            
+            if (playCount >= maxPlays) {
+                clearInterval(this.omInterval);
+                this.omInterval = null;
+            }
+        };
+
+        // Play first time immediately
+        playOm();
+        // Then set interval for repeated plays
+        this.omInterval = setInterval(playOm, 1000); // Play every second
+    }
+
+    // Add method to stop sound (optional)
+    stopAlarm() {
+        if (this.omInterval) {
+            clearInterval(this.omInterval);
+            this.omInterval = null;
+        }
+        this.omSound.pause();
+        this.omSound.currentTime = 0;
     }
 }
 
