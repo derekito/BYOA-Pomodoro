@@ -34,6 +34,7 @@ class PomodoroTimer {
         
         this.pause();
         this.timeLeft = this.modes[mode];
+        // Update both the display and browser tab title
         this.updateDisplay();
     }
 
@@ -44,7 +45,11 @@ class PomodoroTimer {
     }
 
     updateDisplay() {
-        document.getElementById('timer').textContent = this.formatTime(this.timeLeft);
+        const timeString = this.formatTime(this.timeLeft);
+        // Update the timer display
+        document.getElementById('timer').textContent = timeString;
+        // Update the browser tab title
+        document.title = `${timeString} - Cosmic Tomato`;
     }
 
     start() {
