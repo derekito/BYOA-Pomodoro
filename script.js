@@ -17,6 +17,17 @@ class PomodoroTimer {
         this.omSound.addEventListener('error', (e) => {
             console.error('Error loading sound:', e);
         });
+
+        // Add user interaction requirement
+        document.addEventListener('click', () => {
+            // Create and play a silent sound to unlock audio
+            this.omSound.play().then(() => {
+                this.omSound.pause();
+                this.omSound.currentTime = 0;
+            }).catch(error => {
+                console.error('Failed to initialize audio:', error);
+            });
+        }, { once: true }); // Only needs to happen once
     }
 
     initializeButtons() {
@@ -85,18 +96,30 @@ class PomodoroTimer {
     }
 
     playAlarm() {
-        try {
-            this.omSound.currentTime = 0;
-            this.omSound.play().then(() => {
-                console.log('Audio played successfully');
-            }).catch(error => {
-                console.error('Error playing audio:', error);
+        return new Promise((resolve, reject) => {
+            try {
+                // Make sure audio is ready to play
+                this.omSound.currentTime = 0;
+                this.omSound.volume = 1.0;
+                
+                const playPromise = this.omSound.play();
+                
+                if (playPromise !== undefined) {
+                    playPromise.then(() => {
+                        console.log('Audio played successfully');
+                        resolve();
+                    }).catch(error => {
+                        console.error('Error playing audio:', error);
+                        alert('Time is up!');
+                        reject(error);
+                    });
+                }
+            } catch (error) {
+                console.error('Error in playAlarm:', error);
                 alert('Time is up!');
-            });
-        } catch (error) {
-            console.error('Error in playAlarm:', error);
-            alert('Time is up!');
-        }
+                reject(error);
+            }
+        });
     }
 
     stopAlarm() {
